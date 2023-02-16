@@ -12,6 +12,22 @@ services:
       - LAMBDA_EXECUTOR=${LAMBDA_EXECUTOR-}
       - DOCKER_HOST=unix:///var/run/docker.sock
     volumes:
-      - "${LOCALSTACK_VOLUME_DIR:-./volume}:/var/lib/localstack"
-      - "$HOME/.colima/default/docker.sock:/var/run/docker.sock"
+      - "${LOCALSTACK_VOLUME_DIR:-./volumes/main}:/var/lib/localstack"
+      # - "$HOME/.colima/default/docker.sock:/var/run/docker.sock"
       # - "/var/run/docker.sock:/var/run/docker.sock"
+  sqs:
+    container_name: "${LOCALSTACK_DOCKER_NAME-localstack_sqs}"
+    image: localstack/localstack
+    ports:
+      - "4567:4566"
+      - "4571:4571"
+    environment:
+      - SERVICES=${SERVICES- }
+      - DEBUG=${DEBUG- }
+      - DATA_DIR=${DATA_DIR- }
+      - LAMBDA_EXECUTOR=${LAMBDA_EXECUTOR- }
+      - KINESIS_ERROR_PROBABILITY=${KINESIS_ERROR_PROBABILITY- }
+      - DOCKER_HOST=unix:///var/run/docker.sock
+    volumes:
+      - ./bootstrap/sqs:/etc/localstack/init/ready.d
+      - ./volumes/sqs:/var/lib/localstack"
